@@ -47,7 +47,7 @@ export default function Home() {
                 <span className="group-hover:underline">GitHub</span>
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/geraldine-lomeli/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors group"
@@ -58,7 +58,7 @@ export default function Home() {
                 <span className="group-hover:underline">LinkedIn</span>
               </a>
               <a
-                href="mailto:hello@example.com"
+                href="mailto:geralwrks@gmail.com"
                 className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors group"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,7 +105,7 @@ export default function Home() {
             <h2 className="text-lg font-semibold text-slate-200">Live AI Agent Demo</h2>
           </div>
           <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
-            Powered by claude-opus-4-6
+            Powered by llama-3.3-70b on Groq
           </span>
         </div>
 

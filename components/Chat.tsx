@@ -181,20 +181,32 @@ export default function Chat() {
   const [apiKey, setApiKey] = useState("");
   const [keyVisible, setKeyVisible] = useState(false);
   const [keySaved, setKeySaved] = useState(false);
+  const [hasServerKey, setHasServerKey] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Check if server has a key configured
+  useEffect(() => {
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((data) => setHasServerKey(!!data.hasServerKey))
+      .catch(() => {});
+  }, []);
+
   // Load API key from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem("anthropic_api_key");
+    const saved = localStorage.getItem("groq_api_key");
     if (saved) {
       setApiKey(saved);
       setKeySaved(true);
     }
   }, []);
+
+  // Ready to chat: either server has a key or user has saved one
+  const canChat = hasServerKey || keySaved;
 
   // Auto-scroll
   useEffect(() => {
@@ -203,20 +215,20 @@ export default function Chat() {
 
   const saveApiKey = () => {
     if (apiKey.trim()) {
-      localStorage.setItem("anthropic_api_key", apiKey.trim());
+      localStorage.setItem("groq_api_key", apiKey.trim());
       setKeySaved(true);
     }
   };
 
   const clearApiKey = () => {
-    localStorage.removeItem("anthropic_api_key");
+    localStorage.removeItem("groq_api_key");
     setApiKey("");
     setKeySaved(false);
   };
 
   const sendMessage = useCallback(
     async (text: string) => {
-      if (!text.trim() || !apiKey || isLoading) return;
+      if (!text.trim() || !canChat || isLoading) return;
 
       const userMsg: Message = { role: "user", text: text.trim() };
       const assistantMsg: Message = {
@@ -240,13 +252,13 @@ export default function Chat() {
       }));
 
       try {
+        const body: { messages: typeof history; apiKey?: string } = { messages: history };
+        if (apiKey.trim()) body.apiKey = apiKey.trim();
+
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: history,
-            apiKey: apiKey.trim(),
-          }),
+          body: JSON.stringify(body),
         });
 
         if (!res.body) throw new Error("No response body");
@@ -377,7 +389,7 @@ export default function Chat() {
         setTimeout(() => inputRef.current?.focus(), 50);
       }
     },
-    [messages, apiKey, isLoading]
+    [messages, apiKey, canChat, isLoading]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -389,72 +401,74 @@ export default function Chat() {
 
   return (
     <section className="w-full max-w-3xl mx-auto">
-      {/* API Key section */}
-      <div className="mb-6 rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-base">🔑</span>
-          <span className="text-sm font-medium text-slate-300">
-            Anthropic API Key
-          </span>
-          {keySaved && (
-            <span className="ml-auto text-xs text-emerald-400 flex items-center gap-1">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Saved locally
+      {/* API Key section — hidden when server provides a key */}
+      {!hasServerKey && (
+        <div className="mb-6 rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-base">🔑</span>
+            <span className="text-sm font-medium text-slate-300">
+              Groq API Key
             </span>
-          )}
-        </div>
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <input
-              type={keyVisible ? "text" : "password"}
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && saveApiKey()}
-              placeholder="sk-ant-..."
-              className="w-full bg-[#0a0a14] border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors pr-10"
-            />
-            <button
-              onClick={() => setKeyVisible((v) => !v)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-            >
-              {keyVisible ? (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            {keySaved && (
+              <span className="ml-auto text-xs text-emerald-400 flex items-center gap-1">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              )}
-            </button>
+                Saved locally
+              </span>
+            )}
           </div>
-          <button
-            onClick={saveApiKey}
-            disabled={!apiKey.trim()}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors font-medium"
-          >
-            Save
-          </button>
-          {keySaved && (
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type={keyVisible ? "text" : "password"}
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && saveApiKey()}
+                placeholder="gsk_..."
+                className="w-full bg-[#0a0a14] border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors pr-10"
+              />
+              <button
+                onClick={() => setKeyVisible((v) => !v)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+              >
+                {keyVisible ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+              </button>
+            </div>
             <button
-              onClick={clearApiKey}
-              className="px-3 py-2 border border-slate-700 hover:border-red-500/50 hover:text-red-400 text-slate-400 text-sm rounded-lg transition-colors"
+              onClick={saveApiKey}
+              disabled={!apiKey.trim()}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors font-medium"
             >
-              Clear
+              Save
             </button>
-          )}
+            {keySaved && (
+              <button
+                onClick={clearApiKey}
+                className="px-3 py-2 border border-slate-700 hover:border-red-500/50 hover:text-red-400 text-slate-400 text-sm rounded-lg transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <p className="mt-2 text-xs text-slate-600">
+            Your key is stored only in your browser&apos;s localStorage and sent directly to Groq. Never stored on any server.
+          </p>
         </div>
-        <p className="mt-2 text-xs text-slate-600">
-          Your key is stored only in your browser&apos;s localStorage and sent directly to Anthropic. Never stored on any server.
-        </p>
-      </div>
+      )}
 
       {/* Suggested prompts */}
       {messages.length === 0 && (
@@ -466,7 +480,7 @@ export default function Chat() {
             {SUGGESTED_PROMPTS.map((p) => (
               <button
                 key={p.label}
-                onClick={() => keySaved ? sendMessage(p.prompt) : setInput(p.prompt)}
+                onClick={() => canChat ? sendMessage(p.prompt) : setInput(p.prompt)}
                 disabled={isLoading}
                 className="text-left px-4 py-3 rounded-xl border border-slate-700/60 bg-[#0d0d1f] hover:border-emerald-500/40 hover:bg-[#0f0f22] transition-all text-sm text-slate-300 group"
               >
@@ -532,11 +546,11 @@ export default function Chat() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={
-            keySaved
+            canChat
               ? "Ask anything… (Enter to send, Shift+Enter for new line)"
               : "Enter your API key above, then ask anything…"
           }
-          disabled={isLoading || !keySaved}
+          disabled={isLoading || !canChat}
           rows={3}
           className="w-full bg-transparent px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none resize-none disabled:opacity-50"
         />
@@ -546,7 +560,7 @@ export default function Chat() {
           </span>
           <button
             onClick={() => sendMessage(input)}
-            disabled={isLoading || !keySaved || !input.trim()}
+            disabled={isLoading || !canChat || !input.trim()}
             className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-all font-medium"
           >
             {isLoading ? (

@@ -1,85 +1,102 @@
-import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
 import { NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-// ── Tool definitions ──────────────────────────────────────────────────────────
+const MODEL = "llama-3.3-70b-versatile";
 
-const tools: Anthropic.Tool[] = [
+// ── Tool definitions (OpenAI-compatible format) ───────────────────────────────
+
+const tools: Groq.Chat.Completions.ChatCompletionTool[] = [
   {
-    name: "get_weather",
-    description:
-      "Get the current weather for a city. Returns temperature, conditions, humidity, and wind.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        city: {
-          type: "string",
-          description: "City name, e.g. 'Tokyo' or 'New York'",
+    type: "function",
+    function: {
+      name: "get_weather",
+      description:
+        "Get the current weather for a city. Returns temperature, conditions, humidity, and wind.",
+      parameters: {
+        type: "object",
+        properties: {
+          city: {
+            type: "string",
+            description: "City name, e.g. 'Tokyo' or 'New York'",
+          },
         },
+        required: ["city"],
       },
-      required: ["city"],
     },
   },
   {
-    name: "get_wikipedia",
-    description:
-      "Fetch a Wikipedia article summary for a topic. Returns the intro paragraphs.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        topic: {
-          type: "string",
-          description: "The topic to look up on Wikipedia",
+    type: "function",
+    function: {
+      name: "get_wikipedia",
+      description:
+        "Fetch a Wikipedia article summary for a topic. Returns the intro paragraphs.",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            description: "The topic to look up on Wikipedia",
+          },
         },
+        required: ["topic"],
       },
-      required: ["topic"],
     },
   },
   {
-    name: "calculate",
-    description:
-      "Evaluate a mathematical expression safely. Supports standard arithmetic, Math functions (sqrt, pow, log, etc.), and variables.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        expression: {
-          type: "string",
-          description:
-            "A safe mathematical expression, e.g. '10000 * Math.pow(1.07, 20)'",
+    type: "function",
+    function: {
+      name: "calculate",
+      description:
+        "Evaluate a mathematical expression safely. Supports standard arithmetic and Math functions (sqrt, pow, log, etc.).",
+      parameters: {
+        type: "object",
+        properties: {
+          expression: {
+            type: "string",
+            description:
+              "A safe mathematical expression, e.g. '10000 * Math.pow(1.07, 20)'",
+          },
         },
+        required: ["expression"],
       },
-      required: ["expression"],
     },
   },
   {
-    name: "get_current_datetime",
-    description: "Get the current date and time in UTC and multiple timezones.",
-    input_schema: {
-      type: "object" as const,
-      properties: {},
-      required: [],
+    type: "function",
+    function: {
+      name: "get_current_datetime",
+      description: "Get the current date and time in UTC and multiple timezones.",
+      parameters: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
     },
   },
   {
-    name: "get_news",
-    description:
-      "Get the latest top stories from Hacker News, optionally filtered by a search query.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        query: {
-          type: "string",
-          description:
-            "Optional search query to filter HN stories, e.g. 'AI' or 'machine learning'",
+    type: "function",
+    function: {
+      name: "get_news",
+      description:
+        "Get the latest top stories from Hacker News, optionally filtered by a search query.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description:
+              "Optional search query to filter HN stories, e.g. 'AI' or 'machine learning'",
+          },
+          limit: {
+            type: "number",
+            description: "Number of stories to return (default 5, max 10)",
+          },
         },
-        limit: {
-          type: "number",
-          description: "Number of stories to return (default 5, max 10)",
-        },
+        required: [],
       },
-      required: [],
     },
   },
 ];
@@ -132,7 +149,8 @@ async function executeTool(
           `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(pageKey)}`,
           { headers: { "User-Agent": "agent-webpage/1.0" } }
         );
-        if (!summaryRes.ok) return `Could not fetch Wikipedia article for: ${topic}`;
+        if (!summaryRes.ok)
+          return `Could not fetch Wikipedia article for: ${topic}`;
         const summary = await summaryRes.json();
         return JSON.stringify({
           title: summary.title,
@@ -144,8 +162,10 @@ async function executeTool(
 
       case "calculate": {
         const expression = input.expression as string;
-        // Safe subset: only allow math chars + Math object
-        const safe = expression.replace(/[^0-9+\-*/().,\s%^MathsqrpwlogabtnceiPI]/g, "");
+        const safe = expression.replace(
+          /[^0-9+\-*/().,\s%^MathsqrpwlogabtnceiPI]/g,
+          ""
+        );
         if (safe !== expression) {
           return "Expression contains unsafe characters and was rejected.";
         }
@@ -157,7 +177,10 @@ async function executeTool(
         if (typeof result !== "number" || !isFinite(result)) {
           return "Calculation resulted in an invalid number.";
         }
-        return JSON.stringify({ expression, result: Math.round(result * 100) / 100 });
+        return JSON.stringify({
+          expression,
+          result: Math.round(result * 100) / 100,
+        });
       }
 
       case "get_current_datetime": {
@@ -167,13 +190,27 @@ async function executeTool(
           iso: now.toISOString(),
           unix: Math.floor(now.getTime() / 1000),
           timezones: {
-            "America/New_York": now.toLocaleString("en-US", { timeZone: "America/New_York" }),
-            "America/Los_Angeles": now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
-            "Europe/London": now.toLocaleString("en-GB", { timeZone: "Europe/London" }),
-            "Europe/Paris": now.toLocaleString("en-FR", { timeZone: "Europe/Paris" }),
-            "Asia/Tokyo": now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" }),
-            "Asia/Singapore": now.toLocaleString("en-SG", { timeZone: "Asia/Singapore" }),
-            "Australia/Sydney": now.toLocaleString("en-AU", { timeZone: "Australia/Sydney" }),
+            "America/New_York": now.toLocaleString("en-US", {
+              timeZone: "America/New_York",
+            }),
+            "America/Los_Angeles": now.toLocaleString("en-US", {
+              timeZone: "America/Los_Angeles",
+            }),
+            "Europe/London": now.toLocaleString("en-GB", {
+              timeZone: "Europe/London",
+            }),
+            "Europe/Paris": now.toLocaleString("en-FR", {
+              timeZone: "Europe/Paris",
+            }),
+            "Asia/Tokyo": now.toLocaleString("ja-JP", {
+              timeZone: "Asia/Tokyo",
+            }),
+            "Asia/Singapore": now.toLocaleString("en-SG", {
+              timeZone: "Asia/Singapore",
+            }),
+            "Australia/Sydney": now.toLocaleString("en-AU", {
+              timeZone: "Australia/Sydney",
+            }),
           },
         });
       }
@@ -181,24 +218,32 @@ async function executeTool(
       case "get_news": {
         const query = input.query as string | undefined;
         const limit = Math.min(Number(input.limit) || 5, 10);
-        let url: string;
-        if (query) {
-          url = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=${limit}`;
-        } else {
-          url = `https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=${limit}`;
-        }
+        const url = query
+          ? `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=${limit}`
+          : `https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=${limit}`;
         const res = await fetch(url);
         if (!res.ok) return "Could not fetch Hacker News stories.";
         const data = await res.json();
-        const stories = (data.hits || []).slice(0, limit).map(
-          (h: { title: string; url?: string; points?: number; num_comments?: number; author?: string; objectID?: string }) => ({
-            title: h.title,
-            url: h.url || `https://news.ycombinator.com/item?id=${h.objectID ?? ""}`,
-            points: h.points,
-            comments: h.num_comments,
-            author: h.author,
-          })
-        );
+        const stories = (data.hits || [])
+          .slice(0, limit)
+          .map(
+            (h: {
+              title: string;
+              url?: string;
+              points?: number;
+              num_comments?: number;
+              author?: string;
+              objectID?: string;
+            }) => ({
+              title: h.title,
+              url:
+                h.url ||
+                `https://news.ycombinator.com/item?id=${h.objectID ?? ""}`,
+              points: h.points,
+              comments: h.num_comments,
+              author: h.author,
+            })
+          );
         return JSON.stringify({ query: query || "front page", stories });
       }
 
@@ -216,20 +261,29 @@ function sseEvent(data: object): string {
   return `data: ${JSON.stringify(data)}\n\n`;
 }
 
+// ── Types for history ─────────────────────────────────────────────────────────
+
+type ChatMessage = Groq.Chat.ChatCompletionMessageParam;
+
 // ── Route handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  let body: { messages: Anthropic.MessageParam[]; apiKey: string };
+  let body: { messages: { role: string; content: string }[]; apiKey?: string };
   try {
     body = await req.json();
   } catch {
     return new Response("Invalid JSON", { status: 400 });
   }
 
-  const { messages, apiKey } = body;
-  if (!apiKey?.startsWith("sk-")) {
+  const { messages } = body;
+  const apiKey = body.apiKey || process.env.GROQ_API_KEY;
+
+  if (!apiKey) {
     return new Response(
-      sseEvent({ type: "error", message: "Invalid API key format. Key must start with 'sk-'." }),
+      sseEvent({
+        type: "error",
+        message: "No API key available. Please provide a Groq API key.",
+      }),
       {
         status: 200,
         headers: {
@@ -241,7 +295,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const client = new Anthropic({ apiKey });
+  const client = new Groq({ apiKey });
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
@@ -251,106 +305,123 @@ export async function POST(req: NextRequest) {
       };
 
       try {
-        let history: Anthropic.MessageParam[] = [...messages];
+        // Build initial history from client messages
+        const history: ChatMessage[] = messages.map((m) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        }));
+
         const MAX_ITERATIONS = 10;
 
         for (let i = 0; i < MAX_ITERATIONS; i++) {
-          // Stream this turn
-          const msgStream = client.messages.stream({
-            model: "claude-opus-4-6",
+          // Accumulate tool calls by index across streaming chunks
+          const toolCallAccumulator: Record<
+            number,
+            { id: string; name: string; arguments: string }
+          > = {};
+          let assistantText = "";
+
+          const groqStream = await client.chat.completions.create({
+            model: MODEL,
             max_tokens: 4096,
-            system:
-              "You are a helpful AI assistant with access to tools. Use tools when they would improve your answer. Be concise but thorough. Format your responses with markdown when appropriate.",
-            messages: history,
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a helpful AI assistant with access to tools. Use tools when they would improve your answer. Be concise but thorough. Format your responses with markdown when appropriate.",
+              },
+              ...history,
+            ],
             tools,
+            stream: true,
           });
 
-          let assistantText = "";
-          const toolUseBlocks: Anthropic.ToolUseBlock[] = [];
-          let currentToolBlock: { id: string; name: string; input_json: string } | null = null;
+          let finishReason: string | null = null;
 
-          // Stream events
-          for await (const event of msgStream) {
-            if (event.type === "content_block_start") {
-              if (event.content_block.type === "tool_use") {
-                currentToolBlock = {
-                  id: event.content_block.id,
-                  name: event.content_block.name,
-                  input_json: "",
-                };
-              }
-            } else if (event.type === "content_block_delta") {
-              if (event.delta.type === "text_delta") {
-                assistantText += event.delta.text;
-                send({ type: "text_delta", text: event.delta.text });
-              } else if (event.delta.type === "input_json_delta" && currentToolBlock) {
-                currentToolBlock.input_json += event.delta.partial_json;
-              }
-            } else if (event.type === "content_block_stop") {
-              if (currentToolBlock) {
-                let parsedInput: Record<string, unknown> = {};
-                try {
-                  parsedInput = JSON.parse(currentToolBlock.input_json || "{}");
-                } catch {
-                  parsedInput = {};
+          for await (const chunk of groqStream) {
+            const delta = chunk.choices[0]?.delta;
+            finishReason = chunk.choices[0]?.finish_reason ?? finishReason;
+
+            // Text delta
+            if (delta?.content) {
+              assistantText += delta.content;
+              send({ type: "text_delta", text: delta.content });
+            }
+
+            // Tool call deltas — accumulate by index
+            if (delta?.tool_calls) {
+              for (const tc of delta.tool_calls) {
+                const idx = tc.index;
+                if (!toolCallAccumulator[idx]) {
+                  toolCallAccumulator[idx] = {
+                    id: tc.id ?? `call_${idx}`,
+                    name: tc.function?.name ?? "",
+                    arguments: "",
+                  };
+                  // Emit tool_use event as soon as we know name/id
+                  if (tc.function?.name) {
+                    send({
+                      type: "tool_use",
+                      id: toolCallAccumulator[idx].id,
+                      name: tc.function.name,
+                      input: {},
+                    });
+                  }
                 }
-                toolUseBlocks.push({
-                  type: "tool_use",
-                  id: currentToolBlock.id,
-                  name: currentToolBlock.name,
-                  input: parsedInput,
-                });
-                send({
-                  type: "tool_use",
-                  id: currentToolBlock.id,
-                  name: currentToolBlock.name,
-                  input: parsedInput,
-                });
-                currentToolBlock = null;
+                if (tc.function?.arguments) {
+                  toolCallAccumulator[idx].arguments += tc.function.arguments;
+                }
               }
             }
           }
 
-          const finalMsg = await msgStream.finalMessage();
-          const stopReason = finalMsg.stop_reason;
+          const toolCalls = Object.values(toolCallAccumulator);
 
           // Build assistant message for history
-          const assistantContent: Anthropic.MessageParam["content"] = [];
-          if (assistantText) {
-            (assistantContent as Anthropic.TextBlockParam[]).push({ type: "text", text: assistantText });
-          }
-          for (const tb of toolUseBlocks) {
-            (assistantContent as Anthropic.ToolUseBlockParam[]).push({
-              type: "tool_use",
-              id: tb.id,
-              name: tb.name,
-              input: tb.input,
+          if (toolCalls.length > 0) {
+            history.push({
+              role: "assistant",
+              content: assistantText || null,
+              tool_calls: toolCalls.map((tc) => ({
+                id: tc.id,
+                type: "function" as const,
+                function: { name: tc.name, arguments: tc.arguments },
+              })),
             });
-          }
-          if ((assistantContent as unknown[]).length > 0) {
-            history.push({ role: "assistant", content: assistantContent });
+          } else if (assistantText) {
+            history.push({ role: "assistant", content: assistantText });
           }
 
-          if (stopReason === "end_turn" || toolUseBlocks.length === 0) {
+          // Done if no tool calls or model said stop
+          if (toolCalls.length === 0 || finishReason === "stop") {
             break;
           }
 
-          // Execute tools
-          const toolResults: Anthropic.ToolResultBlockParam[] = [];
-          for (const tb of toolUseBlocks) {
-            const result = await executeTool(
-              tb.name,
-              tb.input as Record<string, unknown>
-            );
-            send({ type: "tool_result", id: tb.id, name: tb.name, result });
-            toolResults.push({
+          // Execute tools and add results to history
+          for (const tc of toolCalls) {
+            let parsedInput: Record<string, unknown> = {};
+            try {
+              parsedInput = JSON.parse(tc.arguments || "{}");
+            } catch {
+              parsedInput = {};
+            }
+
+            const result = await executeTool(tc.name, parsedInput);
+
+            // Update tool_use card with final input + result
+            send({
               type: "tool_result",
-              tool_use_id: tb.id,
+              id: tc.id,
+              name: tc.name,
+              result,
+            });
+
+            history.push({
+              role: "tool",
+              tool_call_id: tc.id,
               content: result,
             });
           }
-
-          history.push({ role: "user", content: toolResults });
         }
 
         send({ type: "done" });
