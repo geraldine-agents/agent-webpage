@@ -7,7 +7,11 @@
       "Bash(sed -i '' 's/const nextConfig: NextConfig = {};/const nextConfig = {};/' /Users/kiwi/agent-webpage/next.config.mjs)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"Initial commit: AI agent showcase webpage:*)"
+      "Bash(git commit -m \"Initial commit: AI agent showcase webpage:*)",
+      "Bash(node:*)",
+      "Bash(find /Users/kiwi/agent-webpage -type f -name package.json -o -name *.json -path */. -prune)",
+      "Bash(mkdir -p /Users/kiwi/agent-webpage/public)",
+      "Bash(cp /Users/kiwi/agent-webpage/cv_geraldine.pdf /Users/kiwi/agent-webpage/public/cv_geraldine.pdf)"
     ]
   }
 }

@@ -1,4 +1,8 @@
+import dynamic from "next/dynamic";
 import Chat from "@/components/Chat";
+import RecruiterChat from "@/components/RecruiterChat";
+
+const CVViewer = dynamic(() => import("@/components/CVViewer"), { ssr: false });
 
 export default function Home() {
   return (
@@ -8,8 +12,8 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
           {/* Avatar */}
           <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 via-cyan-500 to-indigo-500 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-emerald-500/20">
-              AI
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-violet-500/20">
+              GL
             </div>
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-[#0a0a0f] flex items-center justify-center">
               <div className="w-2 h-2 bg-white rounded-full" />
@@ -20,7 +24,7 @@ export default function Home() {
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-1">
               <h1 className="text-2xl font-bold gradient-text">
-                AI Engineer
+                Geraldine Lomeli Ponce
               </h1>
               <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 Available for hire
@@ -30,7 +34,7 @@ export default function Home() {
               </span>
             </div>
             <p className="text-slate-400 text-sm mb-3">
-              Building intelligent agents that deliver — agentic loops, tool use, streaming, TypeScript
+              AI & ML Engineer · 6+ years data experience · Agentic systems, LLM orchestration, MLOps
             </p>
 
             {/* Links */}
@@ -73,15 +77,17 @@ export default function Home() {
         {/* Skill chips */}
         <div className="mt-6 flex flex-wrap gap-2">
           {[
-            "TypeScript",
-            "Next.js",
-            "Anthropic API",
-            "Agentic Loops",
-            "Tool Use",
-            "Streaming SSE",
-            "RAG",
             "LangChain",
+            "LangGraph",
+            "Groq",
+            "Gemini",
+            "RAG",
+            "Agentic Loops",
             "Python",
+            "TypeScript",
+            "Spark",
+            "MLOps",
+            "FastAPI",
             "AWS",
           ].map((skill) => (
             <span
@@ -94,8 +100,37 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── Live Demo section ──────────────────────────────────────── */}
-      <div className="w-full max-w-3xl mx-auto">
+      {/* ── SECTION 1: Recruiter Agent (primary) ────────────────────── */}
+      <section id="recruiter" className="w-full max-w-3xl mx-auto mb-16">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-violet-500" />
+          </span>
+          <h2 className="text-lg font-semibold text-slate-200">Ask Me Anything</h2>
+          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
+            AI recruiter assistant · Always available
+          </span>
+        </div>
+
+        <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5">
+          <RecruiterChat />
+        </div>
+      </section>
+
+      {/* ── SECTION 2: CV Viewer ─────────────────────────────────────── */}
+      <section id="cv" className="w-full max-w-3xl mx-auto mb-16">
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-lg font-semibold text-slate-200">Curriculum Vitae</h2>
+          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
+            View inline
+          </span>
+        </div>
+        <CVViewer />
+      </section>
+
+      {/* ── SECTION 3: Live AI Agent Demo (existing) ─────────────────── */}
+      <section id="demo" className="w-full max-w-3xl mx-auto mb-16">
         <div className="flex items-center gap-3 mb-6">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2.5 w-2.5">
@@ -129,12 +164,12 @@ export default function Home() {
         </div>
 
         <Chat />
-      </div>
+      </section>
 
       {/* ── Footer ────────────────────────────────────────────────── */}
       <footer className="w-full max-w-3xl mx-auto mt-16 pt-8 border-t border-slate-800/50 text-center">
         <p className="text-xs text-slate-600">
-          Built with Next.js 14 · TypeScript · Tailwind CSS · Anthropic SDK
+          Built with Next.js 14 · TypeScript · Tailwind CSS · Groq SDK
         </p>
         <p className="text-xs text-slate-700 mt-1">
           Source available on GitHub · Deploy to Vercel in one click

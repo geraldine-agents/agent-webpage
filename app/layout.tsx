@@ -5,13 +5,13 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Agent Demo — Live Interactive Showcase",
+  title: "Geraldine Lomeli Ponce — AI & ML Engineer",
   description:
-    "Live interactive AI agent demo featuring tool use, agentic loops, and streaming. Built with Next.js, TypeScript, and the Anthropic API.",
+    "Portfolio of Geraldine Lomeli Ponce, AI & ML Engineer specializing in agentic systems, LangChain, LangGraph, Groq, RAG, and MLOps.",
   openGraph: {
-    title: "AI Agent Demo — Live Interactive Showcase",
+    title: "Geraldine Lomeli Ponce — AI & ML Engineer",
     description:
-      "Live interactive AI agent demo featuring tool use, agentic loops, and streaming.",
+      "Portfolio of Geraldine Lomeli Ponce, AI & ML Engineer specializing in agentic systems, LangChain, LangGraph, Groq, RAG, and MLOps.",
     type: "website",
   },
 };
