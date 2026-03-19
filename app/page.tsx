@@ -89,7 +89,82 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── SECTION 1: Recruiter Agent (primary) ────────────────────── */}
+      {/* ── SECTION 1: Featured Projects ────────────────────────────── */}
+      <section id="projects" className="w-full max-w-3xl mx-auto mb-16">
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-lg font-semibold text-slate-200">Featured Projects</h2>
+          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
+            Selected work
+          </span>
+        </div>
+
+        <div className="grid gap-4">
+          {/* Project 1 */}
+          <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5 hover:border-slate-600/70 transition-colors">
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-200">AI Quotation Agent</h3>
+                <p className="text-xs text-slate-500 mt-0.5">IT Infrastructure & Digital Services</p>
+              </div>
+              <span className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                96% faster
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              Architected a high-performance agentic system that autonomously orchestrates real-time product queries via GraphQL and REST APIs, cutting quotation time from 2 hours to 5 minutes.
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["LangChain ReAct", "LLaMA 3.3", "Groq", "GraphQL", "REST APIs"].map((t) => (
+                <span key={t} className="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 border border-slate-700/50">{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Project 2 */}
+          <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5 hover:border-slate-600/70 transition-colors">
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-200">Agentic B2C Pricing Engine</h3>
+                <p className="text-xs text-slate-500 mt-0.5">IT Infrastructure & Digital Services</p>
+              </div>
+              <span className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                +8% conversion
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              Engineered an autonomous pricing engine that adjusts SKU prices based on real-time market signals, delivering a direct 8% lift in conversion rates.
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["Gemini 2.5 Flash", "LangChain", "Agentic Loops", "Python"].map((t) => (
+                <span key={t} className="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 border border-slate-700/50">{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Project 3 */}
+          <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5 hover:border-slate-600/70 transition-colors">
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-200">Clinical Data Lakehouse</h3>
+                <p className="text-xs text-slate-500 mt-0.5">B2C Medical Laboratory</p>
+              </div>
+              <span className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                20k+ patients
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+              Architected a clinical data lakehouse spanning 20k+ patients across 200+ studies, with AI-ready ETL pipelines for large-scale predictive modeling and an intelligent recommendation engine for personalized lab analyses.
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["Data Lakehouse", "ETL Pipelines", "Recommendation Engine", "BigQuery", "Python"].map((t) => (
+                <span key={t} className="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 border border-slate-700/50">{t}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 2: Recruiter Agent (primary) ────────────────────── */}
       <section id="recruiter" className="w-full max-w-3xl mx-auto mb-16">
         <div className="flex items-center gap-3 mb-6">
           <span className="relative flex h-2.5 w-2.5">
@@ -107,7 +182,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SECTION 2: CV Viewer ─────────────────────────────────────── */}
+      {/* ── SECTION 3: CV Viewer ─────────────────────────────────────── */}
       <section id="cv" className="w-full max-w-3xl mx-auto mb-16">
         <div className="flex items-center gap-3 mb-4">
           <h2 className="text-lg font-semibold text-slate-200">Curriculum Vitae</h2>
@@ -118,7 +193,7 @@ export default function Home() {
         <CVViewer />
       </section>
 
-      {/* ── SECTION 3: Live AI Agent Demo (existing) ─────────────────── */}
+      {/* ── SECTION 4: Live AI Agent Demo (existing) ─────────────────── */}
       <section id="demo" className="w-full max-w-3xl mx-auto mb-16">
         <div className="flex items-center gap-3 mb-6">
           <div className="flex items-center gap-2">
@@ -161,7 +236,7 @@ export default function Home() {
           Built with Next.js 14 · TypeScript · Tailwind CSS · Groq SDK
         </p>
         <p className="text-xs text-slate-700 mt-1">
-          Source available on GitHub · Deploy to Vercel in one click
+          <a href="mailto:geralwrks@gmail.com" className="hover:text-slate-500 transition-colors">geralwrks@gmail.com</a>
         </p>
       </footer>
     </main>
