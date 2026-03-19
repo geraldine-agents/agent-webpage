@@ -11,7 +11,8 @@
       "Bash(node:*)",
       "Bash(find /Users/kiwi/agent-webpage -type f -name package.json -o -name *.json -path */. -prune)",
       "Bash(mkdir -p /Users/kiwi/agent-webpage/public)",
-      "Bash(cp /Users/kiwi/agent-webpage/cv_geraldine.pdf /Users/kiwi/agent-webpage/public/cv_geraldine.pdf)"
+      "Bash(cp /Users/kiwi/agent-webpage/cv_geraldine.pdf /Users/kiwi/agent-webpage/public/cv_geraldine.pdf)",
+      "Bash(ls node_modules/pdfjs-dist/build/*.min.js)"
     ]
   }
 }
