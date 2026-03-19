@@ -3,43 +3,43 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0f;
+  --background: #09090b;
+}
+
+html {
+  font-size: 16px;
 }
 
 body {
-  background-color: #0a0a0f;
-  color: #e2e8f0;
+  background-color: #09090b;
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f0f1a;
+  background: #09090b;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2d2d4a;
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3d3d6a;
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Smooth gradient animation for header */
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #34d399, #22d3ee, #818cf8);
-  background-size: 200% 200%;
-  animation: gradientShift 4s ease infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Name / hero heading — static, no gradient */
+.hero-name {
+  color: #e2e8f0;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
 /* Streaming cursor blink */
@@ -50,14 +50,20 @@ body {
 .cursor-blink::after {
   content: '▋';
   animation: blink 0.7s infinite;
-  color: #34d399;
+  color: #6366f1;
 }
 
-/* Tool card pulse */
-@keyframes toolPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.2); }
-  50% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
+/* Scroll fade-in */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.tool-running {
-  animation: toolPulse 1.5s ease infinite;
+.fade-in {
+  animation: fadeInUp 0.4s ease forwards;
 }

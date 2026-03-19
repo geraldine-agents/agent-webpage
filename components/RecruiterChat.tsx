@@ -4,20 +4,9 @@ import { useState, useRef, useEffect, useCallback } from "react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type ToolStatus = "running" | "done";
-
-interface ToolCall {
-  id: string;
-  name: string;
-  input: Record<string, unknown>;
-  result?: string;
-  status: ToolStatus;
-}
-
 interface Message {
   role: "user" | "assistant";
   text: string;
-  toolCalls?: ToolCall[];
   isStreaming?: boolean;
 }
 
@@ -46,15 +35,15 @@ const SUGGESTED_PROMPTS = [
 
 function renderMarkdown(text: string): string {
   return text
-    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre class="bg-[#0d0d1f] border border-slate-700 rounded-lg p-3 my-2 overflow-x-auto text-sm text-violet-300 font-mono">$1</pre>')
-    .replace(/`([^`]+)`/g, '<code class="bg-[#0d0d1f] text-violet-300 px-1 py-0.5 rounded text-sm font-mono">$1</code>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em class="text-slate-300">$1</em>')
-    .replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold text-slate-100 mt-3 mb-1">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold text-slate-100 mt-4 mb-2">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold text-slate-100 mt-4 mb-2">$1</h1>')
-    .replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc text-slate-300">$1</li>')
-    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-slate-300">$1</li>')
+    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre class="bg-[#09090b] border border-white/[0.06] rounded-lg p-3 my-2 overflow-x-auto text-[0.8rem] text-[#a1a1aa] font-mono">$1</pre>')
+    .replace(/`([^`]+)`/g, '<code class="bg-[#09090b] text-[#e2e8f0] px-1 py-0.5 rounded text-[0.8rem] font-mono">$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-[#e2e8f0] font-semibold">$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em class="text-[#a1a1aa]">$1</em>')
+    .replace(/^### (.+)$/gm, '<h3 class="text-[0.9rem] font-semibold text-[#e2e8f0] mt-3 mb-1">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="text-base font-semibold text-[#e2e8f0] mt-4 mb-2">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-[#e2e8f0] mt-4 mb-2">$1</h1>')
+    .replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc text-[#a1a1aa]">$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-[#a1a1aa]">$1</li>')
     .replace(/\n\n/g, '</p><p class="mt-2">')
     .replace(/\n/g, "<br/>");
 }
@@ -68,7 +57,6 @@ export default function RecruiterChat() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -78,12 +66,7 @@ export default function RecruiterChat() {
       if (!text.trim() || isLoading) return;
 
       const userMsg: Message = { role: "user", text: text.trim() };
-      const assistantMsg: Message = {
-        role: "assistant",
-        text: "",
-        toolCalls: [],
-        isStreaming: true,
-      };
+      const assistantMsg: Message = { role: "assistant", text: "", isStreaming: true };
 
       setMessages((prev) => [...prev, userMsg, assistantMsg]);
       setInput("");
@@ -92,10 +75,7 @@ export default function RecruiterChat() {
       const history = [
         ...messages,
         { role: "user" as const, text: text.trim() },
-      ].map((m) => ({
-        role: m.role,
-        content: m.text || " ",
-      }));
+      ].map((m) => ({ role: m.role, content: m.text || " " }));
 
       try {
         const res = await fetch("/api/recruiter", {
@@ -124,21 +104,14 @@ export default function RecruiterChat() {
             if (!jsonStr) continue;
 
             let event: Record<string, unknown>;
-            try {
-              event = JSON.parse(jsonStr);
-            } catch {
-              continue;
-            }
+            try { event = JSON.parse(jsonStr); } catch { continue; }
 
             if (event.type === "text_delta") {
               setMessages((prev) => {
                 const updated = [...prev];
                 const last = updated[updated.length - 1];
                 if (last.role === "assistant") {
-                  return [
-                    ...updated.slice(0, -1),
-                    { ...last, text: last.text + (event.text as string) },
-                  ];
+                  return [...updated.slice(0, -1), { ...last, text: last.text + (event.text as string) }];
                 }
                 return updated;
               });
@@ -156,14 +129,7 @@ export default function RecruiterChat() {
                 const updated = [...prev];
                 const last = updated[updated.length - 1];
                 if (last.role === "assistant") {
-                  return [
-                    ...updated.slice(0, -1),
-                    {
-                      ...last,
-                      text: `⚠️ ${event.message as string}`,
-                      isStreaming: false,
-                    },
-                  ];
+                  return [...updated.slice(0, -1), { ...last, text: `⚠️ ${event.message as string}`, isStreaming: false }];
                 }
                 return updated;
               });
@@ -175,14 +141,7 @@ export default function RecruiterChat() {
           const updated = [...prev];
           const last = updated[updated.length - 1];
           if (last.role === "assistant") {
-            return [
-              ...updated.slice(0, -1),
-              {
-                ...last,
-                text: `⚠️ Network error: ${err instanceof Error ? err.message : String(err)}`,
-                isStreaming: false,
-              },
-            ];
+            return [...updated.slice(0, -1), { ...last, text: `⚠️ Network error: ${err instanceof Error ? err.message : String(err)}`, isStreaming: false }];
           }
           return updated;
         });
@@ -206,7 +165,7 @@ export default function RecruiterChat() {
       {/* Welcome + suggested prompts */}
       {messages.length === 0 && (
         <div className="mb-6">
-          <p className="text-sm text-slate-400 mb-4">
+          <p className="text-[0.9rem] text-[#52525b] mb-4">
             Hi! I&apos;m Geraldine&apos;s AI assistant. Ask me anything about her experience, skills, projects, or availability.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -215,12 +174,12 @@ export default function RecruiterChat() {
                 key={p.label}
                 onClick={() => sendMessage(p.prompt)}
                 disabled={isLoading}
-                className="text-left px-4 py-3 rounded-xl border border-slate-700/60 bg-[#0d0d1f] hover:border-violet-500/40 hover:bg-[#0f0f22] transition-all text-sm text-slate-300 group"
+                className="text-left px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.05] transition-colors duration-200 disabled:opacity-40"
               >
-                <span className="font-medium text-slate-200 group-hover:text-violet-300 transition-colors block mb-0.5">
+                <span className="text-[0.85rem] font-medium text-[#e2e8f0] block mb-0.5">
                   {p.label}
                 </span>
-                <span className="text-xs text-slate-500 line-clamp-2">{p.prompt}</span>
+                <span className="text-[0.75rem] text-[#52525b] line-clamp-2">{p.prompt}</span>
               </button>
             ))}
           </div>
@@ -233,25 +192,23 @@ export default function RecruiterChat() {
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "user" ? (
-                <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-tr-sm bg-violet-600/80 text-white text-sm">
+                <div className="max-w-[80%] px-4 py-2.5 rounded-2xl rounded-tr-sm bg-[#6366f1] text-white text-[0.9rem]">
                   {msg.text}
                 </div>
               ) : (
-                <div className="w-full rounded-xl bg-[#0d0d1f] border border-slate-700/50 p-4">
+                <div className="w-full rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
                   {msg.text ? (
                     <div
-                      className={`text-sm text-slate-300 leading-relaxed prose-invert ${msg.isStreaming ? "cursor-blink" : ""}`}
-                      dangerouslySetInnerHTML={{
-                        __html: `<p class="mt-0">${renderMarkdown(msg.text)}</p>`,
-                      }}
+                      className={`text-[0.9rem] text-[#a1a1aa] leading-[1.7] prose-invert ${msg.isStreaming ? "cursor-blink" : ""}`}
+                      dangerouslySetInnerHTML={{ __html: `<p class="mt-0">${renderMarkdown(msg.text)}</p>` }}
                     />
                   ) : msg.isStreaming ? (
-                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                      <svg className="w-4 h-4 animate-spin text-violet-500" fill="none" viewBox="0 0 24 24">
+                    <div className="flex items-center gap-2 text-[#52525b] text-[0.85rem]">
+                      <svg className="w-4 h-4 animate-spin text-[#6366f1]" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      <span className="text-xs">Thinking…</span>
+                      <span>Thinking…</span>
                     </div>
                   ) : null}
                 </div>
@@ -263,7 +220,7 @@ export default function RecruiterChat() {
       )}
 
       {/* Input */}
-      <div className="relative rounded-xl border border-slate-700/60 bg-[#0d0d1f] focus-within:border-violet-500/40 transition-colors">
+      <div className="relative rounded-xl border border-white/[0.06] bg-white/[0.03] focus-within:border-white/[0.12] transition-colors duration-200">
         <textarea
           ref={inputRef}
           value={input}
@@ -272,16 +229,16 @@ export default function RecruiterChat() {
           placeholder="Ask about Geraldine's experience, skills, availability… (Enter to send)"
           disabled={isLoading}
           rows={3}
-          className="w-full bg-transparent px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none resize-none disabled:opacity-50"
+          className="w-full bg-transparent px-4 py-3 text-[0.9rem] text-[#a1a1aa] placeholder-[#52525b] focus:outline-none resize-none disabled:opacity-50"
         />
         <div className="flex items-center justify-between px-3 pb-3">
-          <span className="text-xs text-slate-600">
+          <span className="text-[0.72rem] text-[#52525b]">
             {input.length > 0 ? `${input.length} chars` : ""}
           </span>
           <button
             onClick={() => sendMessage(input)}
             disabled={isLoading || !input.trim()}
-            className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-all font-medium"
+            className="flex items-center gap-2 px-4 py-1.5 bg-[#6366f1] hover:bg-[#818cf8] disabled:opacity-40 disabled:cursor-not-allowed text-white text-[0.85rem] rounded-lg transition-colors duration-200 font-medium"
           >
             {isLoading ? (
               <>
@@ -308,7 +265,7 @@ export default function RecruiterChat() {
         <div className="mt-3 flex justify-center">
           <button
             onClick={() => setMessages([])}
-            className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
+            className="text-[0.75rem] text-[#52525b] hover:text-[#a1a1aa] transition-colors duration-200"
           >
             Clear conversation
           </button>

@@ -6,82 +6,69 @@ const CVViewer = dynamic(() => import("@/components/CVViewer"), { ssr: false });
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#0a0a0f] px-4 py-12">
+    <main className="min-h-screen bg-[#09090b] px-4 py-16">
       {/* ── Profile header ──────────────────────────────────────────── */}
-      <header className="w-full max-w-3xl mx-auto mb-12">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+      <header className="w-full max-w-[740px] mx-auto mb-20 fade-in">
+        <div className="flex flex-col sm:flex-row items-start gap-6">
           {/* Avatar */}
-          <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 via-indigo-500 to-cyan-500 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-violet-500/20">
-              GL
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-[#0a0a0f] flex items-center justify-center">
-              <div className="w-2 h-2 bg-white rounded-full" />
-            </div>
+          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-base font-semibold text-[#e2e8f0]">
+            GL
           </div>
 
-          {/* Name + badges */}
+          {/* Name + content */}
           <div className="flex-1">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <h1 className="text-2xl font-bold gradient-text">
-                Geraldine Lomeli
-              </h1>
-              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                Available for hire
+            <div className="flex flex-wrap items-baseline gap-3 mb-3">
+              <h1 className="hero-name">Geraldine Lomeli</h1>
+              <span className="px-2 py-0.5 text-[0.7rem] uppercase tracking-[0.08em] rounded bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
+                Available
               </span>
-              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+              <span className="px-2 py-0.5 text-[0.7rem] uppercase tracking-[0.08em] rounded bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
                 Remote · USD
               </span>
             </div>
-            <p className="text-slate-400 text-sm mb-3">
-              AI & ML Engineer · 6+ years data experience · Agentic systems, LLM orchestration, MLOps
+
+            <p className="text-[0.9rem] text-[#a1a1aa] leading-[1.7] mb-1.5 max-w-lg">
+              I build production AI agents and ML systems that deliver measurable business outcomes.
+            </p>
+            <p className="text-[0.75rem] text-[#52525b] mb-5">
+              MSc Data Science (NLP) · BSc Physics · 6+ years data experience
             </p>
 
             {/* Links */}
-            <div className="flex flex-wrap gap-3">
-<a
+            <div className="flex flex-wrap gap-5">
+              <a
                 href="https://www.linkedin.com/in/geraldine-lomeli/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors group"
+                className="flex items-center gap-1.5 text-[0.8rem] text-[#52525b] hover:text-[#a1a1aa] transition-colors duration-200"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                 </svg>
-                <span className="group-hover:underline">LinkedIn</span>
+                LinkedIn
               </a>
               <a
                 href="mailto:geralwrks@gmail.com"
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors group"
+                className="flex items-center gap-1.5 text-[0.8rem] text-[#52525b] hover:text-[#a1a1aa] transition-colors duration-200"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span className="group-hover:underline">Email</span>
+                Email
               </a>
             </div>
           </div>
         </div>
 
         {/* Skill chips */}
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-8 flex flex-wrap gap-2">
           {[
-            "LangChain",
-            "LangGraph",
-            "Groq",
-            "Gemini",
-            "RAG",
-            "Agentic Loops",
-            "Python",
-            "TypeScript",
-            "Spark",
-            "MLOps",
-            "FastAPI",
-            "AWS",
+            "LangChain", "LangGraph", "Groq", "Gemini", "RAG",
+            "Agentic Loops", "Python", "TypeScript", "Spark", "MLOps", "FastAPI", "AWS",
           ].map((skill) => (
             <span
               key={skill}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800/60 text-slate-400 border border-slate-700/50"
+              className="px-[10px] py-[4px] text-[0.75rem] rounded-[6px] bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]"
             >
               {skill}
             </span>
@@ -89,140 +76,121 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── SECTION 1: Featured Projects ────────────────────────────── */}
-      <section id="projects" className="w-full max-w-3xl mx-auto mb-16">
-        <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-lg font-semibold text-slate-200">Featured Projects</h2>
-          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
-            Selected work
-          </span>
+      {/* ── SECTION 1: Featured Projects ─────────────────────────────── */}
+      <section id="projects" className="w-full max-w-[740px] mx-auto mb-20">
+        <div className="flex items-baseline gap-3 mb-6">
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Featured Projects</h2>
+          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">Selected work</span>
         </div>
 
-        <div className="grid gap-4">
+        <div className="flex flex-col gap-4">
           {/* Project 1 */}
-          <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5 hover:border-slate-600/70 transition-colors">
+          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 hover:bg-white/[0.05] transition-colors duration-200">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
-                <h3 className="text-sm font-semibold text-slate-200">AI Quotation Agent</h3>
-                <p className="text-xs text-slate-500 mt-0.5">IT Infrastructure & Digital Services</p>
+                <h3 className="text-[0.9rem] font-semibold text-[#e2e8f0]">AI Quotation Agent</h3>
+                <p className="text-[0.75rem] text-[#52525b] mt-0.5">IT Infrastructure & Digital Services</p>
               </div>
-              <span className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+              <span className="flex-shrink-0 px-2.5 py-1 text-[0.7rem] rounded-[6px] bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
                 96% faster
               </span>
             </div>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-4">
               Architected a high-performance agentic system that autonomously orchestrates real-time product queries via GraphQL and REST APIs, cutting quotation time from 2 hours to 5 minutes.
             </p>
             <div className="flex flex-wrap gap-1.5">
               {["LangChain ReAct", "LLaMA 3.3", "Groq", "GraphQL", "REST APIs"].map((t) => (
-                <span key={t} className="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 border border-slate-700/50">{t}</span>
+                <span key={t} className="px-[10px] py-[3px] text-[0.72rem] rounded-[6px] bg-white/[0.05] text-[#52525b] border border-white/[0.08]">{t}</span>
               ))}
             </div>
           </div>
 
           {/* Project 2 */}
-          <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5 hover:border-slate-600/70 transition-colors">
+          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 hover:bg-white/[0.05] transition-colors duration-200">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
-                <h3 className="text-sm font-semibold text-slate-200">Agentic B2C Pricing Engine</h3>
-                <p className="text-xs text-slate-500 mt-0.5">IT Infrastructure & Digital Services</p>
+                <h3 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Agentic B2C Pricing Engine</h3>
+                <p className="text-[0.75rem] text-[#52525b] mt-0.5">IT Infrastructure & Digital Services</p>
               </div>
-              <span className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="flex-shrink-0 px-2.5 py-1 text-[0.7rem] rounded-[6px] bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
                 +8% conversion
               </span>
             </div>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-4">
               Engineered an autonomous pricing engine that adjusts SKU prices based on real-time market signals, delivering a direct 8% lift in conversion rates.
             </p>
             <div className="flex flex-wrap gap-1.5">
               {["Gemini 2.5 Flash", "LangChain", "Agentic Loops", "Python"].map((t) => (
-                <span key={t} className="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 border border-slate-700/50">{t}</span>
+                <span key={t} className="px-[10px] py-[3px] text-[0.72rem] rounded-[6px] bg-white/[0.05] text-[#52525b] border border-white/[0.08]">{t}</span>
               ))}
             </div>
           </div>
 
           {/* Project 3 */}
-          <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5 hover:border-slate-600/70 transition-colors">
+          <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 hover:bg-white/[0.05] transition-colors duration-200">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div>
-                <h3 className="text-sm font-semibold text-slate-200">Clinical Data Lakehouse</h3>
-                <p className="text-xs text-slate-500 mt-0.5">B2C Medical Laboratory</p>
+                <h3 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Clinical Data Lakehouse</h3>
+                <p className="text-[0.75rem] text-[#52525b] mt-0.5">B2C Medical Laboratory</p>
               </div>
-              <span className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+              <span className="flex-shrink-0 px-2.5 py-1 text-[0.7rem] rounded-[6px] bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
                 20k+ patients
               </span>
             </div>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+            <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-4">
               Architected a clinical data lakehouse spanning 20k+ patients across 200+ studies, with AI-ready ETL pipelines for large-scale predictive modeling and an intelligent recommendation engine for personalized lab analyses.
             </p>
             <div className="flex flex-wrap gap-1.5">
               {["Data Lakehouse", "ETL Pipelines", "Recommendation Engine", "BigQuery", "Python"].map((t) => (
-                <span key={t} className="px-2 py-0.5 text-xs rounded bg-slate-800 text-slate-400 border border-slate-700/50">{t}</span>
+                <span key={t} className="px-[10px] py-[3px] text-[0.72rem] rounded-[6px] bg-white/[0.05] text-[#52525b] border border-white/[0.08]">{t}</span>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── SECTION 2: Recruiter Agent (primary) ────────────────────── */}
-      <section id="recruiter" className="w-full max-w-3xl mx-auto mb-16">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-violet-500" />
-          </span>
-          <h2 className="text-lg font-semibold text-slate-200">Ask Me Anything</h2>
-          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
-            AI recruiter assistant · Always available
-          </span>
+      {/* ── SECTION 2: Recruiter Agent ───────────────────────────────── */}
+      <section id="recruiter" className="w-full max-w-[740px] mx-auto mb-20">
+        <div className="flex items-baseline gap-3 mb-6">
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Ask Me Anything</h2>
+          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">AI recruiter assistant</span>
         </div>
 
-        <div className="rounded-xl border border-slate-700/50 bg-[#0d0d1f] p-5">
+        <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6">
           <RecruiterChat />
         </div>
       </section>
 
       {/* ── SECTION 3: CV Viewer ─────────────────────────────────────── */}
-      <section id="cv" className="w-full max-w-3xl mx-auto mb-16">
-        <div className="flex items-center gap-3 mb-4">
-          <h2 className="text-lg font-semibold text-slate-200">Curriculum Vitae</h2>
-          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
-            View inline
-          </span>
+      <section id="cv" className="w-full max-w-[740px] mx-auto mb-20">
+        <div className="flex items-baseline gap-3 mb-4">
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Curriculum Vitae</h2>
+          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">View inline</span>
         </div>
         <CVViewer />
       </section>
 
-      {/* ── SECTION 4: Live AI Agent Demo (existing) ─────────────────── */}
-      <section id="demo" className="w-full max-w-3xl mx-auto mb-16">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-            </span>
-            <h2 className="text-lg font-semibold text-slate-200">Live AI Agent Demo</h2>
-          </div>
-          <span className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded-full">
-            Powered by llama-3.3-70b on Groq
-          </span>
+      {/* ── SECTION 4: Live AI Agent Demo ────────────────────────────── */}
+      <section id="demo" className="w-full max-w-[740px] mx-auto mb-20">
+        <div className="flex items-baseline gap-3 mb-6">
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Live AI Agent Demo</h2>
+          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">llama-3.3-70b · Groq</span>
         </div>
 
         {/* Feature highlights */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           {[
-            { icon: "🔧", label: "Tool Use", desc: "5 live tools" },
-            { icon: "♾️", label: "Agentic Loop", desc: "Multi-step reasoning" },
-            { icon: "⚡", label: "Streaming", desc: "Real-time SSE" },
-            { icon: "🔒", label: "Secure", desc: "Your key, your data" },
+            { label: "Tool Use", desc: "5 live tools" },
+            { label: "Agentic Loop", desc: "Multi-step reasoning" },
+            { label: "Streaming", desc: "Real-time SSE" },
+            { label: "Secure", desc: "Your key, your data" },
           ].map((f) => (
             <div
               key={f.label}
-              className="rounded-lg bg-[#0d0d1f] border border-slate-700/40 p-3 text-center"
+              className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 text-center"
             >
-              <div className="text-lg mb-1">{f.icon}</div>
-              <div className="text-xs font-medium text-slate-300">{f.label}</div>
-              <div className="text-xs text-slate-600 mt-0.5">{f.desc}</div>
+              <div className="text-[0.8rem] font-medium text-[#e2e8f0] mb-0.5">{f.label}</div>
+              <div className="text-[0.72rem] text-[#52525b]">{f.desc}</div>
             </div>
           ))}
         </div>
@@ -230,13 +198,15 @@ export default function Home() {
         <Chat />
       </section>
 
-      {/* ── Footer ────────────────────────────────────────────────── */}
-      <footer className="w-full max-w-3xl mx-auto mt-16 pt-8 border-t border-slate-800/50 text-center">
-        <p className="text-xs text-slate-600">
+      {/* ── Footer ───────────────────────────────────────────────────── */}
+      <footer className="w-full max-w-[740px] mx-auto mt-20 pt-8 border-t border-white/[0.06] text-center">
+        <p className="text-[0.75rem] text-[#52525b]">
           Built with Next.js 14 · TypeScript · Tailwind CSS · Groq SDK
         </p>
-        <p className="text-xs text-slate-700 mt-1">
-          <a href="mailto:geralwrks@gmail.com" className="hover:text-slate-500 transition-colors">geralwrks@gmail.com</a>
+        <p className="text-[0.75rem] text-[#52525b] mt-1">
+          <a href="mailto:geralwrks@gmail.com" className="hover:text-[#a1a1aa] transition-colors duration-200">
+            geralwrks@gmail.com
+          </a>
         </p>
       </footer>
     </main>
