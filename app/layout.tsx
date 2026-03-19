@@ -5,13 +5,13 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Geraldine Lomeli Ponce — AI & ML Engineer",
+  title: "Geraldine Lomeli — AI & ML Engineer",
   description:
-    "Portfolio of Geraldine Lomeli Ponce, AI & ML Engineer specializing in agentic systems, LangChain, LangGraph, Groq, RAG, and MLOps.",
+    "Portfolio of Geraldine Lomeli, AI & ML Engineer specializing in agentic systems, LangChain, LangGraph, Groq, RAG, and MLOps.",
   openGraph: {
-    title: "Geraldine Lomeli Ponce — AI & ML Engineer",
+    title: "Geraldine Lomeli — AI & ML Engineer",
     description:
-      "Portfolio of Geraldine Lomeli Ponce, AI & ML Engineer specializing in agentic systems, LangChain, LangGraph, Groq, RAG, and MLOps.",
+      "Portfolio of Geraldine Lomeli, AI & ML Engineer specializing in agentic systems, LangChain, LangGraph, Groq, RAG, and MLOps.",
     type: "website",
   },
 };
