@@ -149,7 +149,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SECTION 2: Recruiter Agent ───────────────────────────────── */}
+      {/* ── SECTION 2: Book a Call ───────────────────────────────────── */}
+      <section id="book" className="w-full max-w-[740px] mx-auto mb-20">
+        <div className="flex items-baseline gap-3 mb-6">
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Book a Call</h2>
+          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">Schedule time with me</span>
+        </div>
+
+        <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="flex-1">
+            <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-1">
+              Interested in working together? Pick a time that works for you — I&apos;m open to introductory calls, technical discussions, and interviews.
+            </p>
+          </div>
+          <a
+            href="https://calendar.app.google/ULxkX2oiLEPHgmfs5"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-[#6366f1] hover:bg-[#818cf8] text-white text-[0.85rem] font-medium rounded-lg transition-colors duration-200"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Schedule a call
+          </a>
+        </div>
+      </section>
+
+      {/* ── SECTION 3: Recruiter Agent ───────────────────────────────── */}
       <section id="recruiter" className="w-full max-w-[740px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Ask Me Anything</h2>
@@ -161,7 +188,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SECTION 3: CV Viewer ─────────────────────────────────────── */}
+      {/* ── SECTION 4: CV Viewer ─────────────────────────────────────── */}
       <section id="cv" className="w-full max-w-[740px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-4">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Curriculum Vitae</h2>
@@ -170,7 +197,7 @@ export default function Home() {
         <CVViewer />
       </section>
 
-      {/* ── SECTION 4: Live AI Agent Demo ────────────────────────────── */}
+      {/* ── SECTION 5: Live AI Agent Demo ────────────────────────────── */}
       <section id="demo" className="w-full max-w-[740px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Live AI Agent Demo</h2>
