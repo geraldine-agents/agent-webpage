@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#09090b] px-4 py-16">
       {/* ── Profile header ──────────────────────────────────────────── */}
-      <header className="w-full max-w-[740px] mx-auto mb-20 fade-in">
+      <header className="w-full max-w-[960px] mx-auto mb-20 fade-in">
         <div className="flex flex-col sm:flex-row items-start gap-6">
           {/* Avatar */}
           <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-base font-semibold text-[#e2e8f0]">
@@ -77,7 +77,7 @@ export default function Home() {
       </header>
 
       {/* ── SECTION 1: Featured Projects ─────────────────────────────── */}
-      <section id="projects" className="w-full max-w-[740px] mx-auto mb-20">
+      <section id="projects" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Featured Projects</h2>
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">Selected work</span>
@@ -150,7 +150,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 2: Book a Call ───────────────────────────────────── */}
-      <section id="book" className="w-full max-w-[740px] mx-auto mb-20">
+      <section id="book" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Book a Call</h2>
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">Schedule time with me</span>
@@ -177,7 +177,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 3: Recruiter Agent ───────────────────────────────── */}
-      <section id="recruiter" className="w-full max-w-[740px] mx-auto mb-20">
+      <section id="recruiter" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Ask Me Anything</h2>
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">AI recruiter assistant</span>
@@ -189,7 +189,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 4: CV Viewer ─────────────────────────────────────── */}
-      <section id="cv" className="w-full max-w-[740px] mx-auto mb-20">
+      <section id="cv" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-4">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Curriculum Vitae</h2>
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">View inline</span>
@@ -198,7 +198,7 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 5: Live AI Agent Demo ────────────────────────────── */}
-      <section id="demo" className="w-full max-w-[740px] mx-auto mb-20">
+      <section id="demo" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Live AI Agent Demo</h2>
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">llama-3.3-70b · Groq</span>
@@ -226,7 +226,7 @@ export default function Home() {
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────────── */}
-      <footer className="w-full max-w-[740px] mx-auto mt-20 pt-8 border-t border-white/[0.06] text-center">
+      <footer className="w-full max-w-[960px] mx-auto mt-20 pt-8 border-t border-white/[0.06] text-center">
         <p className="text-[0.75rem] text-[#52525b]">
           Built with Next.js 14 · TypeScript · Tailwind CSS · Groq SDK
         </p>
