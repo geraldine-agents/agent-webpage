@@ -204,24 +204,6 @@ export default function Home() {
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">llama-3.3-70b · Groq</span>
         </div>
 
-        {/* Feature highlights */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          {[
-            { label: "Tool Use", desc: "5 live tools" },
-            { label: "Agentic Loop", desc: "Multi-step reasoning" },
-            { label: "Streaming", desc: "Real-time SSE" },
-            { label: "Secure", desc: "Your key, your data" },
-          ].map((f) => (
-            <div
-              key={f.label}
-              className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 text-center"
-            >
-              <div className="text-[0.8rem] font-medium text-[#e2e8f0] mb-0.5">{f.label}</div>
-              <div className="text-[0.72rem] text-[#52525b]">{f.desc}</div>
-            </div>
-          ))}
-        </div>
-
         <Chat />
       </section>
 
