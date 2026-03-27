@@ -23,11 +23,7 @@ interface Message {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const SUGGESTED_PROMPTS = [
-  {
-    label: "Weather + Wikipedia",
-    prompt: "What's the weather in Tokyo and what are the top things to do there?",
-  },
+const BASE_PROMPTS = [
   {
     label: "Compound Interest",
     prompt: "If I invest $10,000 at 7% compound interest for 20 years, how much will I have?",
@@ -41,6 +37,17 @@ const SUGGESTED_PROMPTS = [
     prompt: "What's trending in AI and ML on Hacker News today?",
   },
 ];
+
+function buildPrompts(city: string | null) {
+  const place = city || "my city";
+  return [
+    {
+      label: "Weather + Things to Do",
+      prompt: `What's the weather in ${place} and what are the top things to do there?`,
+    },
+    ...BASE_PROMPTS,
+  ];
+}
 
 const TOOL_LABELS: Record<string, string> = {
   get_weather: "Weather",
@@ -142,6 +149,7 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [visitorCity, setVisitorCity] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -149,6 +157,13 @@ export default function Chat() {
     fetch("/api/config")
       .then((r) => r.json())
       .then((data) => setHasServerKey(!!data.hasServerKey))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/geo")
+      .then((r) => r.json())
+      .then((data) => setVisitorCity(data.city))
       .catch(() => {});
   }, []);
 
@@ -381,7 +396,7 @@ export default function Chat() {
             Try these examples
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {SUGGESTED_PROMPTS.map((p) => (
+            {buildPrompts(visitorCity).map((p) => (
               <button
                 key={p.label}
                 onClick={() => canChat ? sendMessage(p.prompt) : setInput(p.prompt)}
