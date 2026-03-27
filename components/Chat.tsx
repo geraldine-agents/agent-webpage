@@ -23,21 +23,6 @@ interface Message {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const BASE_PROMPTS = [
-  {
-    label: "Compound Interest",
-    prompt: "If I invest $10,000 at 7% compound interest for 20 years, how much will I have?",
-  },
-  {
-    label: "LLMs Explained",
-    prompt: "Tell me about large language models and transformer architecture",
-  },
-  {
-    label: "HN AI News",
-    prompt: "What's trending in AI and ML on Hacker News today?",
-  },
-];
-
 function buildPrompts(city: string | null) {
   const place = city || "my city";
   return [
@@ -45,7 +30,6 @@ function buildPrompts(city: string | null) {
       label: "Weather + Things to Do",
       prompt: `What's the weather in ${place} and what are the top things to do there?`,
     },
-    ...BASE_PROMPTS,
   ];
 }
 
