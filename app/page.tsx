@@ -10,11 +10,6 @@ export default function Home() {
       {/* ── Profile header ──────────────────────────────────────────── */}
       <header className="w-full max-w-[960px] mx-auto mb-20 fade-in">
         <div className="flex flex-col sm:flex-row items-start gap-6">
-          {/* Avatar */}
-          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-base font-semibold text-[#e2e8f0]">
-            GL
-          </div>
-
           {/* Name + content */}
           <div className="flex-1">
             <div className="flex flex-wrap items-baseline gap-3 mb-3">

@@ -1,0 +1,14 @@
+  {                                                                                                                                                                         
+    "rewrites": [                                                                                                                                                           
+      {                                                                                                                                                                     
+        "source": "/energy",                                
+        "destination": "https://web-production-d540.up.railway.app/"
+      },                                                                                                                                                                    
+      {
+        "source": "/energy/:path*",                                                                                                                                         
+        "destination": "https://web-production-d540.up.railway.app/:path*"
+      }
+    ]
+  }
+
+
