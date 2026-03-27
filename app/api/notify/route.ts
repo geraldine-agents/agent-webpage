@@ -29,23 +29,39 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing config" }, { status: 500 });
   }
 
+  // Server-side headers (Vercel geo)
   const country = req.headers.get("x-vercel-ip-country") || "Unknown";
+  const region = req.headers.get("x-vercel-ip-country-region") || "";
+  const city = req.headers.get("x-vercel-ip-city") || "Unknown";
+  const lat = req.headers.get("x-vercel-ip-latitude") || "";
+  const lon = req.headers.get("x-vercel-ip-longitude") || "";
   const referer = req.headers.get("referer") || "Direct";
   const ua = req.headers.get("user-agent") || "";
   const language = req.headers.get("accept-language")?.split(",")[0] || "Unknown";
   const browser = parseUserAgent(ua);
 
+  // Client-side payload
+  const body = await req.json().catch(() => ({}));
+  const { timezone = "Unknown", screen = "Unknown", device = "Unknown", path = "/" } = body;
+
   const refererHost = referer !== "Direct"
     ? new URL(referer).hostname.replace("www.", "")
     : "Direct";
 
+  const location = [city, region, country].filter(Boolean).join(", ");
+  const coords = lat && lon ? `${lat}, ${lon}` : null;
+  const mapsLink = coords ? `https://maps.google.com/?q=${lat},${lon}` : null;
+
   const text = [
     `👀 New visit on geraldine.lat`,
-    `🌍 Country: ${country}`,
+    `📍 ${location}`,
+    coords && `🗺 Coords: ${mapsLink}`,
     `📎 From: ${refererHost}`,
-    `🖥️ Browser: ${browser}`,
-    `🌐 Language: ${language}`,
-  ].join("\n");
+    `🖥️ ${browser} · ${screen}`,
+    `📱 ${device}`,
+    `🌐 ${language} · ${timezone}`,
+    `🔗 Path: ${path}`,
+  ].filter(Boolean).join("\n");
 
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
