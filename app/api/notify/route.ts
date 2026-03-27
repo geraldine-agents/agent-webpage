@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   // Client-side payload
   const body = await req.json().catch(() => ({}));
-  const { timezone = "Unknown", screen = "Unknown", device = "Unknown", path = "/" } = body;
+  const { timezone = "Unknown", screen = "Unknown", device = "Unknown", path = "/", visitedAt = "Unknown" } = body;
 
   const refererHost = referer !== "Direct"
     ? new URL(referer).hostname.replace("www.", "")
@@ -54,6 +54,7 @@ export async function POST(req: NextRequest) {
 
   const text = [
     `👀 New visit on geraldine.lat`,
+    `🕐 ${visitedAt}`,
     `📍 ${location}`,
     coords && `🗺 Coords: ${mapsLink}`,
     `📎 From: ${refererHost}`,
