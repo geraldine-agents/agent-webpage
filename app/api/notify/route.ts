@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   // Server-side headers (Vercel geo)
   const country = req.headers.get("x-vercel-ip-country") || "Unknown";
   const region = req.headers.get("x-vercel-ip-country-region") || "";
-  const city = req.headers.get("x-vercel-ip-city") || "Unknown";
+  const city = decodeURIComponent(req.headers.get("x-vercel-ip-city") || "Unknown");
   const lat = req.headers.get("x-vercel-ip-latitude") || "";
   const lon = req.headers.get("x-vercel-ip-longitude") || "";
   const referer = req.headers.get("referer") || "Direct";
