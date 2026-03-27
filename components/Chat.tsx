@@ -134,6 +134,11 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [visitorCity, setVisitorCity] = useState<string | null>(null);
+  const [undertoneImage, setUndertoneImage] = useState<string | null>(null);
+  const [undertoneMime, setUndertoneMime] = useState<string>("image/jpeg");
+  const [undertoneResult, setUndertoneResult] = useState<string | null>(null);
+  const [undertoneLoading, setUndertoneLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -176,6 +181,34 @@ export default function Chat() {
     localStorage.removeItem("groq_api_key");
     setApiKey("");
     setKeySaved(false);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUndertoneMime(file.type || "image/jpeg");
+    setUndertoneResult(null);
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const dataUrl = ev.target?.result as string;
+      const base64 = dataUrl.split(",")[1];
+      setUndertoneImage(dataUrl);
+      setUndertoneLoading(true);
+      try {
+        const res = await fetch("/api/undertone", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageBase64: base64, mimeType: file.type, apiKey: apiKey.trim() || undefined }),
+        });
+        const data = await res.json();
+        setUndertoneResult(data.result || data.error || "No result.");
+      } catch {
+        setUndertoneResult("Something went wrong. Please try again.");
+      } finally {
+        setUndertoneLoading(false);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const sendMessage = useCallback(
@@ -393,6 +426,58 @@ export default function Chat() {
                 <span className="text-[0.75rem] text-[#52525b] line-clamp-2">{p.prompt}</span>
               </button>
             ))}
+
+            {/* Skin Undertone Card */}
+            <div className="px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.03]">
+              <span className="text-[0.85rem] font-medium text-[#e2e8f0] block mb-0.5">Skin Undertone</span>
+              <span className="text-[0.75rem] text-[#52525b] block mb-3">Upload a photo and find out if your undertone is warm, cool, or neutral.</span>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+
+              {!undertoneImage ? (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={!canChat}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.08] text-[#a1a1aa] text-[0.78rem] rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Upload photo
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={undertoneImage} alt="Uploaded" className="w-12 h-12 rounded-lg object-cover border border-white/[0.08]" />
+                    <button
+                      onClick={() => { setUndertoneImage(null); setUndertoneResult(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                      className="text-[0.72rem] text-[#52525b] hover:text-[#a1a1aa] transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  {undertoneLoading && (
+                    <div className="flex items-center gap-2 text-[#52525b] text-[0.78rem]">
+                      <svg className="w-3.5 h-3.5 animate-spin text-[#6366f1]" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Analyzing…
+                    </div>
+                  )}
+                  {undertoneResult && (
+                    <p className="text-[0.78rem] text-[#a1a1aa] leading-[1.6]">{undertoneResult}</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
