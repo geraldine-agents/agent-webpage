@@ -96,7 +96,7 @@ export default function Home() {
               </span>
             </div>
             <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-4">
-              Architected a high-performance agentic system that autonomously orchestrates real-time product queries via GraphQL and REST APIs, cutting quotation time from 2 hours to 5 minutes.
+              Built a LangChain ReAct agent (LLaMA 3.3 on Groq) that queries internal product data through GraphQL and REST APIs to generate sales quotes; cut turnaround from 2 hours to 5 minutes.
             </p>
             <div className="flex flex-wrap gap-1.5">
               {["LangChain ReAct", "LLaMA 3.3", "Groq", "GraphQL", "REST APIs"].map((t) => (
@@ -138,7 +138,7 @@ export default function Home() {
               </span>
             </div>
             <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-4">
-              Architected a clinical data lakehouse spanning 20k+ patients across 200+ studies, with AI-ready ETL pipelines for large-scale predictive modeling and an intelligent recommendation engine for personalized lab analyses.
+              Built a clinical data lakehouse on AWS consolidating 20k+ patients across 200+ studies, with automated ingestion pipelines and an sklearn/XGBoost recommendation model for lab analysis suggestions.
             </p>
             <div className="flex flex-wrap gap-1.5">
               {["Data Lakehouse", "ETL Pipelines", "Recommendation Engine", "BigQuery", "Python"].map((t) => (
