@@ -23,7 +23,7 @@ export default function Home() {
                 Available
               </span>
               <span className="px-2 py-0.5 text-[0.7rem] uppercase tracking-[0.08em] rounded bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
-                Remote · USD
+                Remote
               </span>
             </div>
 
