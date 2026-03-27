@@ -19,12 +19,6 @@ export default function Home() {
           <div className="flex-1">
             <div className="flex flex-wrap items-baseline gap-3 mb-3">
               <h1 className="hero-name">Geraldine Lomeli</h1>
-              <span className="px-2 py-0.5 text-[0.7rem] uppercase tracking-[0.08em] rounded bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
-                Available
-              </span>
-              <span className="px-2 py-0.5 text-[0.7rem] uppercase tracking-[0.08em] rounded bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]">
-                Remote
-              </span>
             </div>
 
             <p className="text-[0.9rem] text-[#a1a1aa] leading-[1.7] mb-1.5 max-w-lg">
@@ -159,7 +153,7 @@ export default function Home() {
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="flex-1">
             <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-1">
-              Interested in working together? Pick a time that works for you — I&apos;m open to introductory calls, technical discussions, and interviews.
+              If you&apos;re hiring for a senior ML or AI Engineer role, or scoping an agentic system, let&apos;s talk for 20 min — I can tell you quickly whether I&apos;m the right fit or point you in the right direction.
             </p>
           </div>
           <a
@@ -179,7 +173,7 @@ export default function Home() {
       {/* ── SECTION 3: Recruiter Agent ───────────────────────────────── */}
       <section id="recruiter" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
-          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Ask Me Anything</h2>
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Curious about something specific?</h2>
           <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">AI recruiter assistant</span>
         </div>
 
@@ -210,9 +204,6 @@ export default function Home() {
       {/* ── Footer ───────────────────────────────────────────────────── */}
       <footer className="w-full max-w-[960px] mx-auto mt-20 pt-8 border-t border-white/[0.06] text-center">
         <p className="text-[0.75rem] text-[#52525b]">
-          Built with Next.js 14 · TypeScript · Tailwind CSS · Groq SDK
-        </p>
-        <p className="text-[0.75rem] text-[#52525b] mt-1">
           <a href="mailto:geralwrks@gmail.com" className="hover:text-[#a1a1aa] transition-colors duration-200">
             geralwrks@gmail.com
           </a>
