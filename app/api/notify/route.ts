@@ -64,11 +64,14 @@ export async function POST(req: NextRequest) {
     `🔗 Path: ${path}`,
   ].filter(Boolean).join("\n");
 
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chat_id: chatId, text }),
   });
 
-  return NextResponse.json({ ok: true });
+  const data = await res.json();
+  const messageId = data.result?.message_id ?? null;
+
+  return NextResponse.json({ ok: true, messageId, text });
 }
