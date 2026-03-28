@@ -125,7 +125,7 @@ function ToolCard({ tool }: { tool: ToolCall }) {
 
 // ── Main Chat component ───────────────────────────────────────────────────────
 
-export default function Chat() {
+export default function Chat({ compact = false }: { compact?: boolean }) {
   const [apiKey, setApiKey] = useState("");
   const [keyVisible, setKeyVisible] = useState(false);
   const [keySaved, setKeySaved] = useState(false);
@@ -343,10 +343,10 @@ export default function Chat() {
   };
 
   return (
-    <section className="w-full">
+    <div className={compact ? "flex flex-col h-full overflow-hidden" : "w-full"}>
       {/* API Key section */}
       {!hasServerKey && (
-        <div className="mb-6 rounded-xl border border-white/[0.06] bg-white/[0.03] p-5">
+        <div className={`${compact ? "mb-3 flex-shrink-0" : "mb-6"} rounded-xl border border-white/[0.06] bg-white/[0.03] p-5`}>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-[0.85rem] font-medium text-[#e2e8f0]">Groq API Key</span>
             {keySaved && (
@@ -408,7 +408,7 @@ export default function Chat() {
 
       {/* Suggested prompts */}
       {messages.length === 0 && (
-        <div className="mb-6">
+        <div className={compact ? "flex-1 overflow-y-auto min-h-0 pb-2" : "mb-6"}>
           <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b] mb-3">
             Try these examples
           </p>
@@ -484,7 +484,7 @@ export default function Chat() {
 
       {/* Messages */}
       {messages.length > 0 && (
-        <div className="mb-4 space-y-4 min-h-[200px]">
+        <div className={compact ? "flex-1 overflow-y-auto min-h-0 space-y-4 pr-0.5" : "mb-4 space-y-4 min-h-[200px]"}>
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "user" ? (
@@ -578,6 +578,6 @@ export default function Chat() {
           </button>
         </div>
       )}
-    </section>
+    </div>
   );
 }

@@ -1,27 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put, list } from "@vercel/blob";
 
-const BLOB_FILENAME = "visit-counts.json";
+const BLOB_FILENAME = "visits.json";
 
-async function readCounts(): Promise<Record<string, number>> {
+interface VisitRecord {
+  timestamp: string;
+  visitedAt: string;
+  ip: string;
+  visitNumber: number;
+  country: string;
+  region: string;
+  city: string;
+  lat: string;
+  lon: string;
+  referer: string;
+  browser: string;
+  screen: string;
+  device: string;
+  language: string;
+  timezone: string;
+}
+
+interface VisitDB {
+  counts: Record<string, number>;
+  visits: VisitRecord[];
+}
+
+async function readDB(): Promise<VisitDB> {
   try {
     const { blobs } = await list({ prefix: BLOB_FILENAME });
-    if (blobs.length === 0) return {};
+    if (blobs.length === 0) return { counts: {}, visits: [] };
     const res = await fetch(`${blobs[0].downloadUrl}?t=${Date.now()}`, { cache: "no-store" });
     return await res.json();
   } catch {
-    return {};
+    return { counts: {}, visits: [] };
   }
 }
 
-async function incrementVisitCount(ip: string): Promise<number> {
-  const counts = await readCounts();
-  counts[ip] = (counts[ip] ?? 0) + 1;
-  await put(BLOB_FILENAME, JSON.stringify(counts), {
+async function saveVisit(record: Omit<VisitRecord, "visitNumber">): Promise<number> {
+  const db = await readDB();
+  db.counts[record.ip] = (db.counts[record.ip] ?? 0) + 1;
+  const visitNumber = db.counts[record.ip];
+  db.visits.push({ ...record, visitNumber });
+  await put(BLOB_FILENAME, JSON.stringify(db), {
     access: "public",
     allowOverwrite: true,
   });
-  return counts[ip];
+  return visitNumber;
 }
 
 function parseUserAgent(ua: string): string {
@@ -53,35 +78,52 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing config" }, { status: 500 });
   }
 
-  // IP + visit count
+  // IP
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
     || req.headers.get("x-real-ip")
     || "Unknown";
-  let visitCount = 0;
-  try {
-    visitCount = await incrementVisitCount(ip);
-  } catch {
-    // blob unavailable — notification still sends
-  }
 
   // Server-side headers (Vercel geo)
-  const country = req.headers.get("x-vercel-ip-country") || "Unknown";
+  const country = req.headers.get("x-vercel-ip-country") || "";
   const region = req.headers.get("x-vercel-ip-country-region") || "";
-  const city = decodeURIComponent(req.headers.get("x-vercel-ip-city") || "Unknown");
+  const city = decodeURIComponent(req.headers.get("x-vercel-ip-city") || "");
   const lat = req.headers.get("x-vercel-ip-latitude") || "";
   const lon = req.headers.get("x-vercel-ip-longitude") || "";
   const referer = req.headers.get("referer") || "Direct";
   const ua = req.headers.get("user-agent") || "";
-  const language = req.headers.get("accept-language")?.split(",")[0] || "Unknown";
+  const language = req.headers.get("accept-language")?.split(",")[0] || "";
   const browser = parseUserAgent(ua);
 
   // Client-side payload
   const body = await req.json().catch(() => ({}));
-  const { timezone = "Unknown", screen = "Unknown", device = "Unknown", path = "/", visitedAt = "Unknown" } = body;
+  const { timezone = "", screen = "", device = "", visitedAt = "" } = body;
 
   const refererHost = referer !== "Direct"
     ? new URL(referer).hostname.replace("www.", "")
     : "Direct";
+
+  // Save to blob
+  let visitCount = 0;
+  try {
+    visitCount = await saveVisit({
+      timestamp: new Date().toISOString(),
+      visitedAt,
+      ip,
+      country,
+      region,
+      city,
+      lat,
+      lon,
+      referer: refererHost,
+      browser,
+      screen,
+      device,
+      language,
+      timezone,
+    });
+  } catch {
+    // blob unavailable — notification still sends
+  }
 
   const location = [city, region, country].filter(Boolean).join(", ");
   const coords = lat && lon ? `${lat}, ${lon}` : null;
@@ -91,7 +133,7 @@ export async function POST(req: NextRequest) {
     `👀 New visit on geraldine.lat`,
     `🕐 ${visitedAt}`,
     `🌐 IP: ${ip}${visitCount ? ` · Visit #${visitCount}` : ""}`,
-    `📍 ${location}`,
+    `📍 ${location || "Unknown"}`,
     coords && `🗺 Coords: ${mapsLink}`,
     `📎 From: ${refererHost}`,
     `🖥️ ${browser} · ${screen}`,
