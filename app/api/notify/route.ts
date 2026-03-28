@@ -1,39 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { put, list, getDownloadUrl } from "@vercel/blob";
+import { put, list } from "@vercel/blob";
 
 const BLOB_FILENAME = "visit-counts.json";
 
-async function getVisitCount(ip: string): Promise<number> {
+async function readCounts(): Promise<Record<string, number>> {
   try {
     const { blobs } = await list({ prefix: BLOB_FILENAME });
-    if (blobs.length === 0) return 1;
-
-    const res = await fetch(blobs[0].downloadUrl);
-    const counts: Record<string, number> = await res.json();
-    return (counts[ip] ?? 0) + 1;
+    if (blobs.length === 0) return {};
+    const res = await fetch(blobs[0].downloadUrl, { cache: "no-store" });
+    return await res.json();
   } catch {
-    return 1;
+    return {};
   }
 }
 
-async function saveVisitCount(ip: string, count: number): Promise<void> {
-  try {
-    const { blobs } = await list({ prefix: BLOB_FILENAME });
-    let counts: Record<string, number> = {};
-
-    if (blobs.length > 0) {
-      const res = await fetch(blobs[0].downloadUrl);
-      counts = await res.json();
-    }
-
-    counts[ip] = count;
-    await put(BLOB_FILENAME, JSON.stringify(counts), {
-      access: "public",
-      allowOverwrite: true,
-    });
-  } catch {
-    // silently fail — notification still sends
-  }
+async function incrementVisitCount(ip: string): Promise<number> {
+  const counts = await readCounts();
+  counts[ip] = (counts[ip] ?? 0) + 1;
+  await put(BLOB_FILENAME, JSON.stringify(counts), {
+    access: "public",
+    allowOverwrite: true,
+  });
+  return counts[ip];
 }
 
 function parseUserAgent(ua: string): string {
@@ -69,8 +57,7 @@ export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
     || req.headers.get("x-real-ip")
     || "Unknown";
-  const visitCount = await getVisitCount(ip);
-  saveVisitCount(ip, visitCount); // fire and forget
+  const visitCount = await incrementVisitCount(ip);
 
   // Server-side headers (Vercel geo)
   const country = req.headers.get("x-vercel-ip-country") || "Unknown";
@@ -105,7 +92,6 @@ export async function POST(req: NextRequest) {
     `🖥️ ${browser} · ${screen}`,
     `📱 ${device}`,
     `🌐 ${language} · ${timezone}`,
-    `🔗 Path: ${path}`,
   ].filter(Boolean).join("\n");
 
   const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
