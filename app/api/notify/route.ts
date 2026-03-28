@@ -57,7 +57,12 @@ export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
     || req.headers.get("x-real-ip")
     || "Unknown";
-  const visitCount = await incrementVisitCount(ip);
+  let visitCount = 0;
+  try {
+    visitCount = await incrementVisitCount(ip);
+  } catch {
+    // blob unavailable — notification still sends
+  }
 
   // Server-side headers (Vercel geo)
   const country = req.headers.get("x-vercel-ip-country") || "Unknown";
@@ -85,7 +90,7 @@ export async function POST(req: NextRequest) {
   const text = [
     `👀 New visit on geraldine.lat`,
     `🕐 ${visitedAt}`,
-    `🌐 IP: ${ip} · Visit #${visitCount}`,
+    `🌐 IP: ${ip}${visitCount ? ` · Visit #${visitCount}` : ""}`,
     `📍 ${location}`,
     coords && `🗺 Coords: ${mapsLink}`,
     `📎 From: ${refererHost}`,
