@@ -7,7 +7,7 @@ async function readCounts(): Promise<Record<string, number>> {
   try {
     const { blobs } = await list({ prefix: BLOB_FILENAME });
     if (blobs.length === 0) return {};
-    const res = await fetch(blobs[0].downloadUrl, { cache: "no-store" });
+    const res = await fetch(`${blobs[0].downloadUrl}?t=${Date.now()}`, { cache: "no-store" });
     return await res.json();
   } catch {
     return {};
