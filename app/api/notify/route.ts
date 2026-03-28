@@ -1,4 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
+import { put, list, getDownloadUrl } from "@vercel/blob";
+
+const BLOB_FILENAME = "visit-counts.json";
+
+async function getVisitCount(ip: string): Promise<number> {
+  try {
+    const { blobs } = await list({ prefix: BLOB_FILENAME });
+    if (blobs.length === 0) return 1;
+
+    const res = await fetch(blobs[0].downloadUrl);
+    const counts: Record<string, number> = await res.json();
+    return (counts[ip] ?? 0) + 1;
+  } catch {
+    return 1;
+  }
+}
+
+async function saveVisitCount(ip: string, count: number): Promise<void> {
+  try {
+    const { blobs } = await list({ prefix: BLOB_FILENAME });
+    let counts: Record<string, number> = {};
+
+    if (blobs.length > 0) {
+      const res = await fetch(blobs[0].downloadUrl);
+      counts = await res.json();
+    }
+
+    counts[ip] = count;
+    await put(BLOB_FILENAME, JSON.stringify(counts), {
+      access: "public",
+      allowOverwrite: true,
+    });
+  } catch {
+    // silently fail — notification still sends
+  }
+}
 
 function parseUserAgent(ua: string): string {
   if (!ua) return "Unknown";
@@ -29,6 +65,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing config" }, { status: 500 });
   }
 
+  // IP + visit count
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim()
+    || req.headers.get("x-real-ip")
+    || "Unknown";
+  const visitCount = await getVisitCount(ip);
+  saveVisitCount(ip, visitCount); // fire and forget
+
   // Server-side headers (Vercel geo)
   const country = req.headers.get("x-vercel-ip-country") || "Unknown";
   const region = req.headers.get("x-vercel-ip-country-region") || "";
@@ -55,6 +98,7 @@ export async function POST(req: NextRequest) {
   const text = [
     `👀 New visit on geraldine.lat`,
     `🕐 ${visitedAt}`,
+    `🌐 IP: ${ip} · Visit #${visitCount}`,
     `📍 ${location}`,
     coords && `🗺 Coords: ${mapsLink}`,
     `📎 From: ${refererHost}`,
