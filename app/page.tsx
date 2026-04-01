@@ -18,7 +18,7 @@ export default function Home() {
               I build production AI agents and ML systems that deliver measurable business outcomes.
             </p>
             <p className="text-[0.75rem] text-[#52525b] mb-7">
-              MSc Data Science (NLP) · BSc Physics · 6+ years data experience
+              MSc Data Science (NLP) · BSc Physics
             </p>
 
             {/* Impact stats */}
@@ -90,7 +90,6 @@ export default function Home() {
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 lg:h-[560px] flex flex-col">
             <div className="flex items-baseline gap-2 mb-3 flex-shrink-0">
               <span className="text-[0.8rem] font-medium text-[#e2e8f0]">Live AI Agent Demo</span>
-              <span className="text-[0.68rem] uppercase tracking-[0.1em] text-[#52525b]">llama-3.3-70b · Groq</span>
             </div>
             <div className="flex-1 min-h-0">
               <Chat compact />

@@ -12,7 +12,11 @@
       "Bash(find /Users/kiwi/agent-webpage -type f -name package.json -o -name *.json -path */. -prune)",
       "Bash(mkdir -p /Users/kiwi/agent-webpage/public)",
       "Bash(cp /Users/kiwi/agent-webpage/cv_geraldine.pdf /Users/kiwi/agent-webpage/public/cv_geraldine.pdf)",
-      "Bash(ls node_modules/pdfjs-dist/build/*.min.js)"
+      "Bash(ls node_modules/pdfjs-dist/build/*.min.js)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }

@@ -409,9 +409,6 @@ export default function Chat({ compact = false }: { compact?: boolean }) {
       {/* Suggested prompts */}
       {messages.length === 0 && (
         <div className={compact ? "flex-1 overflow-y-auto min-h-0 pb-2" : "mb-6"}>
-          <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b] mb-3">
-            Try these examples
-          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {buildPrompts(visitorCity).map((p) => (
               <button
