@@ -25,8 +25,8 @@ export default function Home() {
             {/* Skills */}
             <div className="flex flex-wrap gap-1.5 mb-7">
               {[
-                "LangChain", "LangGraph", "Groq", "Gemini", "RAG",
-                "Agentic Loops", "Python", "TypeScript", "MLOps", "AWS",
+                "Python Engineering", "Autonomous Agents", "System Architecture", "LLM Orchestration",
+                "Machine Learning", "Production Deployment", "AI Guardrails", "Distributed Systems", "API Integration",
               ].map((skill) => (
                 <span
                   key={skill}
