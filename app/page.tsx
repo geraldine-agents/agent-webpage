@@ -93,13 +93,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* ── Right column: live demo ───────────────────────────────── */}
+          {/* ── Right column: recruiter chat ─────────────────────────── */}
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 lg:h-[560px] flex flex-col">
             <div className="flex items-baseline gap-2 mb-3 flex-shrink-0">
-              <span className="text-[0.8rem] font-medium text-[#e2e8f0]">Live AI Agent Demo</span>
+              <span className="text-[0.8rem] font-medium text-[#e2e8f0]">Curious about something specific?</span>
+              <span className="text-[0.68rem] uppercase tracking-[0.1em] text-[#52525b]">AI recruiter assistant</span>
             </div>
             <div className="flex-1 min-h-0">
-              <Chat compact />
+              <RecruiterChat />
             </div>
           </div>
 
@@ -206,15 +207,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── SECTION 3: Recruiter Agent ───────────────────────────────── */}
-      <section id="recruiter" className="w-full max-w-[960px] mx-auto mb-20">
+      {/* ── SECTION 3: Live AI Agent Demo ────────────────────────────── */}
+      <section id="demo" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
-          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Curious about something specific?</h2>
-          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">AI recruiter assistant</span>
+          <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Live AI Agent Demo</h2>
         </div>
 
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6">
-          <RecruiterChat />
+          <Chat />
         </div>
       </section>
 
