@@ -95,10 +95,9 @@ export default function Home() {
 
           {/* ── Right column: recruiter chat ─────────────────────────── */}
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 lg:h-[560px] flex flex-col">
-            <div className="flex items-baseline gap-2 mb-3 flex-shrink-0">
-              <span className="text-[0.8rem] font-medium text-[#e2e8f0]">Curious about something specific?</span>
-              <span className="text-[0.68rem] uppercase tracking-[0.1em] text-[#52525b]">AI recruiter assistant</span>
-            </div>
+            <p className="text-[0.85rem] text-white font-medium leading-[1.6] mb-3 flex-shrink-0">
+              Hi! I&apos;m Geraldine&apos;s AI assistant. Ask me anything about her experience, skills, projects, or availability.
+            </p>
             <div className="flex-1 min-h-0">
               <RecruiterChat />
             </div>
