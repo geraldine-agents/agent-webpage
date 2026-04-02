@@ -165,9 +165,6 @@ export default function RecruiterChat() {
       {/* Welcome + suggested prompts */}
       {messages.length === 0 && (
         <div className="mb-6">
-          <p className="text-[0.9rem] text-[#52525b] mb-4">
-            Hi! I&apos;m Geraldine&apos;s AI assistant. Ask me anything about her experience, skills, projects, or availability.
-          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {SUGGESTED_PROMPTS.map((p) => (
               <button
