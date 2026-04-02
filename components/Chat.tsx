@@ -23,15 +23,6 @@ interface Message {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-function buildPrompts(city: string | null) {
-  const place = city || "my city";
-  return [
-    {
-      label: "Weather + Things to Do",
-      prompt: `What's the weather in ${place} and what are the top things to do there?`,
-    },
-  ];
-}
 
 const TOOL_LABELS: Record<string, string> = {
   get_weather: "Weather",
@@ -410,19 +401,6 @@ export default function Chat({ compact = false }: { compact?: boolean }) {
       {messages.length === 0 && (
         <div className={compact ? "flex-1 overflow-y-auto min-h-0 pb-2" : "mb-6"}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {buildPrompts(visitorCity).map((p) => (
-              <button
-                key={p.label}
-                onClick={() => canChat ? sendMessage(p.prompt) : setInput(p.prompt)}
-                disabled={isLoading}
-                className="text-left px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.05] transition-colors duration-200 disabled:opacity-40"
-              >
-                <span className="text-[0.85rem] font-medium text-[#e2e8f0] block mb-0.5">
-                  {p.label}
-                </span>
-                <span className="text-[0.75rem] text-[#52525b] line-clamp-2">{p.prompt}</span>
-              </button>
-            ))}
 
             {/* Skin Undertone Card */}
             <div className="px-4 py-3 rounded-xl border border-white/[0.06] bg-white/[0.03]">

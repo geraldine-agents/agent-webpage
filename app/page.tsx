@@ -110,7 +110,6 @@ export default function Home() {
       <section id="projects" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Featured Projects</h2>
-          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">Selected work</span>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -183,7 +182,6 @@ export default function Home() {
       <section id="book" className="w-full max-w-[960px] mx-auto mb-20">
         <div className="flex items-baseline gap-3 mb-6">
           <h2 className="text-[0.9rem] font-semibold text-[#e2e8f0]">Book a Call</h2>
-          <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b]">Schedule time with me</span>
         </div>
 
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
