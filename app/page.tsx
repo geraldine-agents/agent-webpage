@@ -37,6 +37,24 @@ export default function Home() {
               ))}
             </div>
 
+            {/* Tools */}
+            <div className="mb-7">
+              <p className="text-[0.7rem] uppercase tracking-[0.12em] text-[#52525b] mb-2">Tools</p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  "Vector Databases", "SQL", "GraphQL", "Docker", "LangGraph", "Python", "Bash",
+                  "Git", "AWS", "CI/CD", "LangChain", "Spark", "PyTorch", "TensorFlow", "Statistical Modelling",
+                ].map((tool) => (
+                  <span
+                    key={tool}
+                    className="px-[10px] py-[4px] text-[0.75rem] rounded-[6px] bg-white/[0.05] text-[#a1a1aa] border border-white/[0.08]"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-3">
               <a
