@@ -21,19 +21,6 @@ export default function Home() {
               MSc Data Science (NLP) · BSc Physics
             </p>
 
-            {/* Impact stats */}
-            <div className="grid grid-cols-3 gap-2.5 mb-7">
-              {[
-                { value: "96%", label: "faster quotes" },
-                { value: "+8%", label: "conversion lift" },
-                { value: "20k+", label: "patients scaled" },
-              ].map((s) => (
-                <div key={s.value} className="rounded-lg bg-white/[0.03] border border-white/[0.06] p-3 text-center">
-                  <div className="text-[1.15rem] font-bold text-[#e2e8f0] font-display">{s.value}</div>
-                  <div className="text-[0.67rem] text-[#52525b] mt-0.5">{s.label}</div>
-                </div>
-              ))}
-            </div>
 
             {/* Skills */}
             <div className="flex flex-wrap gap-1.5 mb-7">
