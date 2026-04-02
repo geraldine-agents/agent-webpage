@@ -187,7 +187,7 @@ export default function Home() {
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="flex-1">
             <p className="text-[0.85rem] text-[#a1a1aa] leading-[1.7] mb-1">
-              If you&apos;re hiring for a senior ML or AI Engineer role, or scoping an agentic system, let&apos;s talk for 20 min — I can tell you quickly whether I&apos;m the right fit or point you in the right direction.
+              If you&apos;re hiring for a senior ML or AI Engineer role, or scoping an agentic system, let&apos;s talk for 20 min.
             </p>
           </div>
           <a
